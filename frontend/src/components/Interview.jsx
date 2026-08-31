@@ -1,8 +1,9 @@
-﻿import { useState, useEffect, useCallback } from "react";
+﻿import { useState, useEffect, useCallback, useRef } from "react";
 import { api } from "../api";
 import ProfilePanel from "./ProfilePanel";
 
 export default function Interview({ session, onFinished }) {
+  const isFetching = useRef(false);
   const [question, setQuestion] = useState(null);
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(true);
@@ -12,6 +13,8 @@ export default function Interview({ session, onFinished }) {
   const [showSource, setShowSource] = useState(false);
 
   const loadNext = useCallback(async () => {
+    if (isFetching.current) return;
+    isFetching.current = true;
     setLoading(true);
     setLastFeedback(null);
     setShowSource(false);
@@ -19,6 +22,7 @@ export default function Interview({ session, onFinished }) {
     setQuestion(q);
     if (q) setAskedCount((c) => c + 1);
     setLoading(false);
+    isFetching.current = false;
     if (!q) {
       const summary = await api.finishSession(session.id);
       onFinished(summary);
