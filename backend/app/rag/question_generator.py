@@ -77,7 +77,7 @@ def _gemini_generate(topic: str, context: str, difficulty: str, candidate_skills
     try:
         import google.generativeai as genai
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        model = genai.GenerativeModel("gemini-flash-latest")
+        model = genai.GenerativeModel("gemini-3.6-flash")
         prompt = (
             f"You are interviewing a fresher candidate for a {role_label} role. "
             f"Their resume shows familiarity with: {', '.join(candidate_skills) or 'general CS fundamentals'}.\n"

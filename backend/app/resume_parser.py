@@ -85,7 +85,7 @@ def _gemini_extract(resume_text: str) -> dict | None:
     try:
         import google.generativeai as genai
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        model = genai.GenerativeModel("gemini-flash-latest")
+        model = genai.GenerativeModel("gemini-3.6-flash")
         prompt = (
             "Extract structured info from this resume as strict JSON with keys "
             "skills (list[str]), technologies (list[str]), domains (list[str]), "

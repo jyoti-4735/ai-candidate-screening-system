@@ -44,7 +44,7 @@ def _gemini_score(answer: str, question: str, source_excerpt: str) -> tuple[floa
     try:
         import google.generativeai as genai
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        model = genai.GenerativeModel("gemini-flash-latest")
+        model = genai.GenerativeModel("gemini-3.6-flash")
         prompt = (
             "Score this candidate interview answer from 0.0 to 1.0 for relevance, "
             "correctness and depth, grounded in the reference material. "
