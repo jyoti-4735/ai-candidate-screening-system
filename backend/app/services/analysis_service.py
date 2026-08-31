@@ -1,4 +1,4 @@
-﻿"""
+"""
 Answer evaluation: scores each answer for relevance/depth so the interview can
 adapt difficulty and the final report can give real insight, not just a
 transcript dump.
@@ -44,7 +44,7 @@ def _gemini_score(answer: str, question: str, source_excerpt: str) -> tuple[floa
     try:
         import google.generativeai as genai
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-flash-latest")
         prompt = (
             "Score this candidate interview answer from 0.0 to 1.0 for relevance, "
             "correctness and depth, grounded in the reference material. "
