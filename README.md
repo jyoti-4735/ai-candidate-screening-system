@@ -12,6 +12,7 @@ Built for the PGAGI AI/ML & Backend Engineering Intern assignment.
 ## 1. Quick Start
 
 ### Backend
+
 cd backend
 python -m venv venv
 venv\Scripts\activate
@@ -31,7 +32,8 @@ npm run dev
 Open http://localhost:5173. The backend must be running on port 8000.
 
 No API key is required to run and demo the full system. See "Dual-mode
-operation" below.
+operation" below. To enable Gemini mode, add a free API key from
+https://aistudio.google.com/apikey to `GEMINI_API_KEY` in `backend/.env`.
 
 ---
 
@@ -89,11 +91,21 @@ Every AI-dependent component has two code paths:
   + length heuristic for answer scoring.
 - Gemini mode (GEMINI_API_KEY set): dense semantic re-ranking on top of
   the TF-IDF shortlist, LLM-based structured resume extraction, LLM
-  generated questions, and LLM-based answer scoring.
+  generated questions, and LLM-based answer scoring. Currently uses
+  gemini-3.6-flash.
 
 Every function tries Gemini first and silently falls back to offline on
 any error or missing key, so the system is always demoable with zero
 setup cost, and genuinely upgrades in quality when a key is provided.
+
+This was verified during real development, not just designed in theory:
+while testing, the API key hit three different issues in the same
+session - two Gemini model names becoming deprecated/unavailable within
+hours of each other (gemini-1.5-flash, then gemini-2.5-flash), and a
+free-tier rate limit (429) on a newer preview model. In every case, the
+interview kept running end-to-end by falling back to offline mode
+automatically, with no crash and no broken UI state - exactly the
+resilience this design is meant to provide.
 
 ### 4.2 Retrieval: TF-IDF baseline, semantic rerank as the upgrade
 TF-IDF is dependency-light, deterministic, and a well-established
@@ -131,7 +143,7 @@ get differently-worded, differently-grounded questions on the same topic.
 
 - Backend: Python, FastAPI, SQLAlchemy (SQLite), scikit-learn (TF-IDF
   retrieval), pypdf (resume parsing), optional google-generativeai
-  (Gemini).
+  (Gemini, model: gemini-3.6-flash).
 - Frontend: React (Vite), plain CSS.
 - Data layer: SQLite by default; DATABASE_URL in .env can point to
   Postgres with no code changes.
@@ -143,3 +155,8 @@ get differently-worded, differently-grounded questions on the same topic.
   ROLE_TOPIC_ROTATION and ROLE_LABELS.
 - Swap the vector layer: retriever.py is the only file that knows about
   TF-IDF/embeddings - everything else calls retrieve().
+- Swap the Gemini model: the model name is set in three places
+  (resume_parser.py, rag/question_generator.py,
+  services/analysis_service.py) - Google occasionally deprecates model
+  names, so check https://ai.google.dev/gemini-api/docs/models if a
+  NotFound error appears.
